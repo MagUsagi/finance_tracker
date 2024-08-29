@@ -2,18 +2,18 @@ from django.db import models
 
 # Create your models here.
 
-# Payment Category
-class PaymentCategory(models.Model):
+# Expense Category
+class ExpenseCategory(models.Model):
     name = models.CharField('Category', max_length=32)
 
     def __str__(self):
         return self.name
     
-# Payment
-class Payment(models.Model):
+# Expense
+class Expense(models.Model):
     date = models.DateField('Date')
-    amount = models.IntegerField('Amount')
-    category = models.ForeignKey(PaymentCategory, on_delete=models.PROTECT, verbose_name="Category")
+    price = models.IntegerField('Amount')
+    category = models.ForeignKey(ExpenseCategory, on_delete=models.PROTECT, verbose_name="Category",null=True, blank=True)
     description = models.TextField('Description', null=True, blank=True)
 
 # Income Category
@@ -26,7 +26,7 @@ class IncomeCategory(models.Model):
 # Income
 class Income(models.Model):
     date = models.DateField('Date')
-    amount = models.IntegerField('Amount')
+    price = models.IntegerField('Amount')
     category = models.ForeignKey(IncomeCategory, on_delete=models.PROTECT, verbose_name="Category")
     description = models.TextField('Description', null=True, blank=True)
 
@@ -37,8 +37,8 @@ class AssetCategory(models.Model):
     def __str__(self):
         return self.name
     
-# Asset
-class Asset(models.Model):
+# Assets
+class Assets(models.Model):
     date = models.DateField('Date')
     amount = models.BigIntegerField('Amount')
     category = models.ForeignKey(AssetCategory, on_delete=models.PROTECT, verbose_name="Category")

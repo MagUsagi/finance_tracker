@@ -1,3 +1,5 @@
+<!-- https://github.com/qlitre/django-mdb-kakeibo/tree/master -->
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -6,28 +8,69 @@
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>Finance Tracker</title>
+        <link rel="stylesheet" href="{% static 'finance/css/reset.css' %}">
         <link rel="stylesheet" href="{% static 'finance/css/style.css' %}">
+        {% block extrajs %}{% endblock %}
     </head>
     
     <body>
-        <nav class="navbar">
-            <div>
+        <header class="page-header">
+            <h1>
+                <a href="{% url 'finance:dashboard' %}" class="header-title">Finance Tracker</a>
+            </h1>
+            <nav class="nav">
+                <ul class="main-nav ml-5">
+                    <li class="ml-5">
+                        <a href="{% url 'finance:month_dashboard' now_year now_month %}">Monthly Dashboard</a>
+                    </li>
+                    <li class="ml-5">
+                        <a href="{% url 'finance:transition' %}">Transition</a>
+                    </li>
+                    <li class="ml-5">
+                        <a href="{% url 'finance:expense_list' %}">Expense List</a>
+                    </li>
+                    <li class="ml-5">
+                        <a href="{% url 'finance:income_list' %}">Income List</a>
+                    </li>
+                    <li class="ml-5">
+                        <a href="{% url 'finance:assets' %}">Assets</a>
+                    </li>
+                    <li class="ml-5">
+                        <a href="{% url 'finance:category' %}">Category</a>
+                    </li>
+                    <li class="ml-5">
+                        <a href="{% url 'finance:payee' %}">payee</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
 
+        <div class="layout">
+            <div class="container">
+                <main>
+                    <!-- Display message if available -->
+                     {% if messages %}
+                     <div class="alert alert-success js-alert">
+                        <button class="alert-btn-close js-alert-close" type="button">x</button>
+                        <!-- Extracting messages -->
+                         {% for message in messages %}
+                         <p>{{ message|linebreaks }}</p>
+                         {% endfor %}
+                     </div>
+                     {% endif %}
+                    {% block content %}{% endblock %}
+                </main>
             </div>
-            <ul>
-                <li>
-                    <a class="activ nav-item" href="/">Dashboard</a>
-                </li>
-                <li>
-                    <a class="nav-item" href="">Income & Expens</a>
-                </li>
-                <li>
-                    <a class="nav-item" href="">Assets</a>
-                </li>
-            </ul>
-        </nav>
-
+        </div>
     </body>
 
+<script type="text/javascript">
+    // Close the message by pressing x
+    for (const element of document.querySelectorAll('.js-alert > .js-alert-close')) {
+        element.addEventListener('click', e => {
+            e.target.parentElement.classList.add('is-hidden');
+        });
+    }
+</script>
 
 </html>

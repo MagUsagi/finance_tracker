@@ -1,0 +1,114 @@
+{% extends 'finance/base.html' %}
+{% load humanize %} <!-- Function to put a comma every three digits -->
+{% load finance %} <!-- Function to paginate with search queries -->
+
+{% block content %}
+
+<!-- Register Form -->
+<div>
+    <a class="btn btn-info ml-4" href="{% url 'finance:expense_new' %}">Add New Expence</a>
+</div>
+
+<!-- Search Form -->
+<form class="mt-2" id="search-form" action="" method="GET">
+    <div>
+        <label class="label mr-4">Year,Month</label>
+        {{ search_form.year }}
+        {{ search_form.month }}
+    </div>
+    <div class="mt-4">
+        <label class="label mr-4">Price</label>
+        {{ search_form.greater_than }}
+        <span class="ml-4 mr-4">~</span>
+        {{ search_form.less_than }}
+    </div>
+    <div class="mt-4">
+        {{ search_form.key_word }}
+        <button class="btn btn-info ml-4" type="submit">Search</button>
+    </div>
+    <div class="mt-2 inline">
+        {{ search_form.search_category }}
+    </div>
+</form>
+
+<!-- Number of search results -->
+<p class="search-result mt-3"> {{ page_obj.paginator.count }} results</p>
+
+<!-- List View -->
+<table class="table mt-3">
+    <tr>
+        <th>Date</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Edit</th>
+    </tr>
+    {% for expense in expense_list %}
+
+    <tr>
+        <td>{{ expense.date }}</td>
+        <td>{{ expense.category }}</td>
+        <td>{{ expense.price|intcomma }}</td>
+        <!-- |intcomma: Put a comma every three digits -->
+        <td>
+            {% if expense.description %}
+            {{ expense.description }}
+            {% endif %}
+        </td>
+        <td>
+            <div class="manage-btn-area">
+                <div class="update-btn-area">
+                    <a class="btn btn-info" href="{% url 'finance:expense_update' expense.pk %}">Update</a>
+                </div>
+                <div class="delete-btn-area">
+                    <a class="btn btn-danger" href="{% url 'finance:expense_delete' expense.pk %}">Delete</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- Pagination -->
+<div class="mt-5">
+    <!-- Previous page -->
+     {% if page_obj.has_previous %}
+     <a class="mr-2 prev" href="?{% url_replace request 'page' page_obj.previous_page_number %}" title="Previous Page">Prev</a>
+     {% endif %}
+
+    <!-- Page n / total number of pages -->
+    <span style="color:#0d1a3c"> {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} </span>
+
+    <!-- Next Page -->
+    {% if page_obj.has_next %}
+    <a class="ml-2 next" href="?{% url_replace request 'page' page_obj.next_page_number %}" title="Next Page">Next</a>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+<!-- Custom Category buttons
+One click and the search is executed. -->
+{% block extrajs %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', e => {
+        const searchForm = document.getElementById('search-form');
+
+        // When the category is clicked, excute the search.
+        for (const check of document.getElementsByName('search_category')){
+            check.addEventListener('change', () => {
+                searchForm.submit();
+            });
+        }
+
+        // When the selected category is clicked, uncheck and execute the search.
+        const selectedCategory = document.querySelector(`input[name='search_category']:checked`)
+        if (selectedCategory) {
+            selectedCategory.onclick = () => {
+                selectedCategory.checked = false
+                searchForm.submit();
+            }
+        }
+    });
+</script>
+{% endblock %}

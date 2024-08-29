@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'finance.apps.FinanceConfig', # add
+    'finance.apps.FinanceConfig', # Add
+    'import_export', # Add
+    'django.contrib.humanize', # Add
 ]
 
 MIDDLEWARE = [
@@ -63,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'finance.my_context_processor.common', # Add
             ],
         },
     },
@@ -127,3 +130,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # add
 FINANCE_START_YEAR = 2024
+NUMBER_GROUPING = 3 # Put a comma every three digits

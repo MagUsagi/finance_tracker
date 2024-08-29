@@ -1,0 +1,50 @@
+{% extends 'finance/base.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="month-pager">
+    <a href="{% url 'finance:month_dashboard' prev_year prev_month %}">
+        Prev Month
+    </a>
+    <span class="ml-4 mr-4">{{ year_month }}</span>
+    <a href="{% url 'finance:month_dashboard' next_year next_month %}">
+        Next Month
+    </a>
+</div>
+
+{% autoescape off %}
+<div class="month-dash-page-top mt-4">
+    <div class="left card">
+        <table class="table">
+            <tr>
+                <th>Category</th>
+                <th>Price</th>
+            </tr>
+            {% for key,value in table_set.items %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ value|intcomma }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td>Total</td>
+                <td>{{ total_expense|intcomma }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="right ml-4 hidden_toolbar">
+        {{ plot_pie }}
+    </div>
+</div>
+<div class="month-dash-bottom">
+    <div class="hidden_toolbar">
+        {{ plot_bar }}
+    </div>
+</div>
+{% endautoescape %}
+
+{% endblock %}
+{% block extrajs %}
+<!-- js for plotly -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}

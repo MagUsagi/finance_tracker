@@ -1,0 +1,74 @@
+{% extends 'finance/base.html' %}
+{% load humanize %} <!-- Function to put a comma every three digits -->
+{% load finance %} <!-- Function to paginate with search queries -->
+
+{% block content %}
+
+<!-- Register Form -->
+<div>
+    <a class="btn btn-info ml-4" href="{% url 'finance:income_new' %}">Add New Income</a>
+</div>
+
+<!-- Search Form -->
+<form class="mt-2" id="search-form" action="" method="GET">
+    <label class="label mr-4">Year,Month</label>
+    {{ search_form.year }}
+    {{ search_form.month }}
+    <button class="btn btn-info ml-4" type="submit">Search</button>
+</form>
+
+<!-- Number of search results -->
+<p class="search-result mt-3"> {{ page_obj.paginator.count }} results</p>
+
+<!-- List View -->
+<table class="table mt-3">
+    <tr>
+        <th>Date</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Edit</th>
+    </tr>
+    {% for income in income_list %}
+
+    <tr>
+        <td>{{ income.date }}</td>
+        <td>{{ income.category }}</td>
+        <td>{{ income.price|intcomma }}</td>
+        <!-- |intcomma: Put a comma every three digits -->
+        <td>
+            {% if income.description %}
+            {{ income.description }}
+            {% endif %}
+        </td>
+        <td>
+            <div class="manage-btn-area">
+                <div class="update-btn-area">
+                    <a class="btn btn-info" href="{% url 'finance:income_update' income.pk %}">Update</a>
+                </div>
+                <div class="delete-btn-area">
+                    <a class="btn btn-danger" href="{% url 'finance:income_delete' income.pk %}">Delete</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- Pagination -->
+<div class="mt-5">
+    <!-- Previous page -->
+     {% if page_obj.has_previous %}
+     <a class="mr-2 prev" href="?{% url_replace request 'page' page_obj.previous_page_number %}" title="Previous Page">Prev</a>
+     {% endif %}
+
+    <!-- Page n / total number of pages -->
+    <span style="color:#0d1a3c"> {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} </span>
+
+    <!-- Next Page -->
+    {% if page_obj.has_next %}
+    <a class="ml-2 next" href="?{% url_replace request 'page' page_obj.next_page_number %}" title="Next Page">Next</a>
+    {% endif %}
+</div>
+
+{% endblock %}
